@@ -1,0 +1,34 @@
+{
+  "name": "",
+  "email": "",
+  "phone": "",
+  "location": "",
+  "university": "",
+  "major": "",
+  "gpa": "",
+  "graduation_year": "",
+  "work_auth": "",
+  "visa_needed": false,
+  "links": {
+    "github": "",
+    "linkedin": "",
+    "portfolio": "",
+    "other": []
+  },
+  "target_roles": [],
+  "target_industries": [],
+  "timeline": "",
+  "skills": {
+    "languages": [],
+    "frameworks": [],
+    "tools": [],
+    "other": []
+  },
+  "experience": [],
+  "projects": [],
+  "education": [],
+  "achievements": [],
+  "leadership": [],
+  "writing_sample": "",
+  "resume_parsed": {}
+}
