@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apply AI - Application Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{--cream:#faf7f0;--beige:#f5f1e8;--tan:#eae5d6;--brown:#8b7355;--deep:#5d4e37;--coral:#ff6b6b;--sage:#87a96b;--gold:#d4af37;--blue:#4a90d9;--orange:#ff8c42;--text:#2c2417;--text2:#5d4e37;--text3:#8b7355;--card:#fff;--r:14px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Inter,sans-serif;background:var(--cream);color:var(--text);min-height:100vh}
+.topnav{display:flex;align-items:center;padding:.75rem 2rem;background:var(--card);border-bottom:1px solid var(--tan);position:sticky;top:0;z-index:100}
+.topnav-brand{font-size:1rem;font-weight:800;display:flex;align-items:center;gap:.5rem}
+.topnav-brand i{color:var(--coral)}
+.topnav-right{margin-left:auto;display:flex;gap:.75rem}
+.btn-sm{padding:.4rem .9rem;border-radius:10px;font-size:.78rem;font-weight:600;border:1px solid var(--tan);background:var(--card);cursor:pointer;display:flex;align-items:center;gap:.4rem;transition:all .15s}
+.btn-sm:hover{border-color:var(--coral);color:var(--coral)}
+.btn-sm.primary{background:var(--coral);color:#fff;border-color:var(--coral)}
+.container{max-width:1200px;margin:0 auto;padding:1.5rem 2rem}
+.stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:.75rem;margin-bottom:1.5rem}
+.stat-card{background:var(--card);border:1px solid var(--tan);border-radius:var(--r);padding:1rem;text-align:center}
+.stat-value{font-size:1.5rem;font-weight:800}
+.stat-value.coral{color:var(--coral)}.stat-value.sage{color:var(--sage)}.stat-value.gold{color:var(--gold)}.stat-value.blue{color:var(--blue)}
+.stat-label{font-size:.65rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--text3);margin-top:.25rem}
+.deadline-alert{background:#fef0f0;border:1px solid #f5c6c6;border-radius:var(--r);padding:.85rem 1.1rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:.75rem;font-size:.82rem;font-weight:600;color:var(--coral)}
+.deadline-alert.hidden{display:none}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem}
+.section-title{font-size:.82rem;font-weight:700;color:var(--text2);display:flex;align-items:center;gap:.5rem}
+.section-title i{color:var(--coral)}
+.filter-row{display:flex;gap:.3rem}
+.filter-btn{padding:.25rem .6rem;border-radius:6px;font-size:.65rem;font-weight:600;cursor:pointer;border:1px solid var(--tan);background:var(--card);transition:all .15s}
+.filter-btn:hover{border-color:var(--coral)}
+.filter-btn.active{background:var(--coral);color:#fff;border-color:var(--coral)}
+.app-table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--tan);border-radius:var(--r);overflow:hidden}
+.app-table th{text-align:left;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text3);padding:.7rem 1rem;border-bottom:2px solid var(--tan);background:var(--beige)}
+.app-table td{padding:.75rem 1rem;border-bottom:1px solid var(--beige);font-size:.82rem}
+.app-table tr:last-child td{border-bottom:none}
+.app-table tr:hover td{background:var(--beige)}
+.app-name{font-weight:700}.app-company{color:var(--text2)}
+.app-deadline{font-weight:600;font-size:.78rem}
+.app-deadline.urgent{color:var(--coral)}.app-deadline.soon{color:var(--orange)}.app-deadline.normal{color:var(--text3)}
+.status-badge{display:inline-flex;padding:.2rem .55rem;border-radius:6px;font-size:.62rem;font-weight:700;text-transform:uppercase}
+.status-badge.not_started{background:var(--beige);color:var(--text3)}
+.status-badge.in_progress{background:#fff8e1;color:var(--gold)}
+.status-badge.submitted{background:#e8f5e9;color:var(--sage)}
+.status-badge.interview{background:#e3f2fd;color:var(--blue)}
+.status-badge.offer{background:#e8f5e9;color:#2e7d32}
+.status-badge.rejected{background:#fce4ec;color:var(--coral)}
+.completion-bar{width:80px;height:6px;background:var(--tan);border-radius:99px;overflow:hidden}
+.completion-fill{height:100%;border-radius:99px;background:var(--sage)}
+.profile-card{background:var(--card);border:1px solid var(--tan);border-radius:var(--r);padding:1.25rem;margin-bottom:1.5rem}
+.profile-header{display:flex;align-items:center;gap:1rem;margin-bottom:1rem}
+.profile-avatar{width:48px;height:48px;border-radius:50%;background:var(--coral);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.2rem;font-weight:800}
+.profile-name{font-size:1rem;font-weight:700}
+.profile-sub{font-size:.78rem;color:var(--text3)}
+.profile-tags{display:flex;flex-wrap:wrap;gap:.3rem}
+.profile-tag{padding:.2rem .5rem;border-radius:6px;font-size:.62rem;font-weight:600;background:var(--beige);color:var(--text2)}
+.answer-section{margin-top:1.5rem}
+.answer-stat{display:flex;align-items:center;gap:1rem;padding:.6rem 0;border-bottom:1px solid var(--beige);font-size:.82rem}
+.answer-stat:last-child{border-bottom:none}
+.answer-stat-label{flex:1;color:var(--text2)}
+.answer-stat-count{font-weight:700}
+.empty-state{text-align:center;padding:3rem 2rem;color:var(--text3)}
+.empty-state i{font-size:2.5rem;color:var(--tan);margin-bottom:.75rem;display:block}
+.empty-state p{font-size:.88rem;margin-bottom:1rem}
+@media(max-width:900px){.stats-row{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){.stats-row{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<nav class="topnav">
+<div class="topnav-brand"><i class="fas fa-rocket"></i> Apply AI</div>
+<div class="topnav-right">
+<button class="btn-sm" onclick="loadData()"><i class="fas fa-sync-alt"></i> Refresh</button>
+<button class="btn-sm primary" onclick="addApp()"><i class="fas fa-plus"></i> Add</button>
+</div>
+</nav>
+<div class="container">
+<div class="stats-row">
+<div class="stat-card"><div class="stat-value" id="s-total">0</div><div class="stat-label">Total</div></div>
+<div class="stat-card"><div class="stat-value gold" id="s-prog">0</div><div class="stat-label">In Progress</div></div>
+<div class="stat-card"><div class="stat-value sage" id="s-sub">0</div><div class="stat-label">Submitted</div></div>
+<div class="stat-card"><div class="stat-value blue" id="s-int">0</div><div class="stat-label">Interviews</div></div>
+<div class="stat-card"><div class="stat-value coral" id="s-due">0</div><div class="stat-label">Due This Week</div></div>
+</div>
+<div class="deadline-alert hidden" id="alert"><i class="fas fa-exclamation-triangle"></i><span id="alert-text"></span></div>
+<div class="profile-card" id="pc">
+<div class="empty-state" id="pe"><i class="fas fa-user-circle"></i><p>No profile yet. Tell your Claude agent "I want to apply to jobs" to start onboarding.</p></div>
+<div id="pf" style="display:none">
+<div class="profile-header"><div class="profile-avatar" id="pa">?</div><div><div class="profile-name" id="pn">-</div><div class="profile-sub" id="ps">-</div></div></div>
+<div class="profile-tags" id="pt"></div>
+</div>
+</div>
+<div class="section-header">
+<div class="section-title"><i class="fas fa-list-check"></i> Applications</div>
+<div class="filter-row" id="fr"></div>
+</div>
+<div id="tw">
+<div class="empty-state" id="te"><i class="fas fa-inbox"></i><p>No applications yet. Use the skill to discover programs or add one manually.</p></div>
+<table class="app-table" id="at" style="display:none"><thead><tr><th>Program</th><th>Company</th><th>Deadline</th><th>Status</th><th>Done</th></tr></thead><tbody id="tb"></tbody></table>
+</div>
+<div class="answer-section">
+<div class="section-header" style="margin-top:1.5rem"><div class="section-title"><i class="fas fa-database"></i> Answer Bank</div></div>
+<div class="profile-card">
+<div class="answer-stat"><span class="answer-stat-label">Deterministic fields</span><span class="answer-stat-count" id="ad">0</span></div>
+<div class="answer-stat"><span class="answer-stat-label">Short answers</span><span class="answer-stat-count" id="as">0</span></div>
+<div class="answer-stat"><span class="answer-stat-label">Long-form drafts</span><span class="answer-stat-count" id="al">0</span></div>
+<div class="answer-stat"><span class="answer-stat-label">Total cached</span><span class="answer-stat-count" id="ac">-</span></div>
+</div>
+</div>
+</div>
+<script>
+var profile = null, apps = [], answers = null, filter = "all";
+
+async function tf(paths) {
+  for (var i = 0; i < paths.length; i++) {
+    try {
+      var r = await fetch(paths[i] + "?t=" + Date.now());
+      if (r.ok) return r;
+    } catch (e) {}
+  }
+  return null;
+}
+
+async function loadData() {
+  try {
+    var results = await Promise.all([
+      tf(["/data/profile.json", "data/profile.json"]),
+      tf(["/data/applications.json", "data/applications.json"]),
+      tf(["/data/answers.json", "data/answers.json"])
+    ]);
+    if (results[0]) profile = await results[0].json();
+    if (results[1]) apps = await results[1].json();
+    if (results[2]) answers = await results[2].json();
+  } catch (e) {}
+  if (!apps || !Array.isArray(apps)) apps = [];
+  if (!answers) answers = { deterministic: {}, short_answers: [], long_form: [] };
+  render();
+}
+
+function render() { rProfile(); rStats(); rAlert(); rTable(); rAnswers(); rFilters(); }
+
+function rProfile() {
+  if (!profile || !profile.name) {
+    document.getElementById("pe").style.display = "block";
+    document.getElementById("pf").style.display = "none";
+    return;
+  }
+  document.getElementById("pe").style.display = "none";
+  document.getElementById("pf").style.display = "block";
+  document.getElementById("pa").textContent = profile.name[0];
+  document.getElementById("pn").textContent = profile.name;
+  document.getElementById("ps").textContent = [profile.university, profile.major, profile.graduation_year].filter(Boolean).join(" · ");
+  var tags = [].concat(profile.target_roles || []).concat(profile.target_industries || []);
+  document.getElementById("pt").innerHTML = tags.map(function(t) {
+    return "<span class=\"profile-tag\">" + esc(t) + "</span>";
+  }).join("");
+}
+
+function rStats() {
+  var now = new Date(), wk = new Date(now.getTime() + 7 * 864e5);
+  document.getElementById("s-total").textContent = apps.length;
+  document.getElementById("s-prog").textContent = apps.filter(function(a) { return a.status === "in_progress"; }).length;
+  document.getElementById("s-sub").textContent = apps.filter(function(a) { return a.status === "submitted"; }).length;
+  document.getElementById("s-int").textContent = apps.filter(function(a) { return a.status === "interview" || a.status === "offer"; }).length;
+  document.getElementById("s-due").textContent = apps.filter(function(a) {
+    if (!a.deadline || a.status === "submitted" || a.status === "rejected") return false;
+    var d = new Date(a.deadline);
+    return d >= now && d <= wk;
+  }).length;
+}
+
+function rAlert() {
+  var now = new Date(), td = new Date(now.getTime() + 3 * 864e5);
+  var u = apps.filter(function(a) {
+    if (!a.deadline || a.status === "submitted" || a.status === "rejected") return false;
+    return new Date(a.deadline) <= td;
+  });
+  var el = document.getElementById("alert");
+  if (u.length) {
+    el.classList.remove("hidden");
+    document.getElementById("alert-text").textContent = u.length + " app" + (u.length > 1 ? "s" : "") + " due within 3 days: " + u.map(function(a) { return a.program; }).join(", ");
+  } else {
+    el.classList.add("hidden");
+  }
+}
+
+function rFilters() {
+  var options = ["all", "not_started", "in_progress", "submitted", "interview"];
+  document.getElementById("fr").innerHTML = options.map(function(f) {
+    return "<span class=\"filter-btn" + (filter === f ? " active" : "") + "\" onclick=\"setF('" + f + "')\">" + f.replace(/_/g, " ") + "</span>";
+  }).join("");
+}
+
+function rTable() {
+  var f = apps;
+  if (filter !== "all") f = f.filter(function(a) { return a.status === filter; });
+  if (!f.length) {
+    document.getElementById("te").style.display = "block";
+    document.getElementById("at").style.display = "none";
+    return;
+  }
+  document.getElementById("te").style.display = "none";
+  document.getElementById("at").style.display = "table";
+  f.sort(function(a, b) {
+    if (!a.deadline) return 1;
+    if (!b.deadline) return -1;
+    return new Date(a.deadline) - new Date(b.deadline);
+  });
+  var now = new Date();
+  document.getElementById("tb").innerHTML = f.map(function(a) {
+    var dl = a.deadline ? new Date(a.deadline) : null;
+    var days = dl ? Math.ceil((dl - now) / 864e5) : null;
+    var dc = "normal";
+    if (days !== null && days <= 3) dc = "urgent";
+    else if (days !== null && days <= 7) dc = "soon";
+    var dt = dl ? dl.toLocaleDateString("en-US", { month: "short", day: "numeric" }) + (days !== null ? " (" + days + "d)" : "") : "—";
+    var qs = a.questions || [];
+    var pct = qs.length ? Math.round(qs.filter(function(q) { return q.filled; }).length / qs.length * 100) : 0;
+    return "<tr><td class=\"app-name\">" + esc(a.program || "") + "</td><td class=\"app-company\">" + esc(a.company || "") + "</td><td class=\"app-deadline " + dc + "\">" + dt + "</td><td><span class=\"status-badge " + (a.status || "not_started") + "\">" + (a.status || "not_started").replace(/_/g, " ") + "</span></td><td><div class=\"completion-bar\"><div class=\"completion-fill\" style=\"width:" + pct + "%\"></div></div></td></tr>";
+  }).join("");
+}
+
+function rAnswers() {
+  var d = Object.keys(answers.deterministic || {}).length;
+  var s = (answers.short_answers || []).length;
+  var l = (answers.long_form || []).length;
+  document.getElementById("ad").textContent = d;
+  document.getElementById("as").textContent = s;
+  document.getElementById("al").textContent = l;
+  document.getElementById("ac").textContent = (d + s + l) || "—";
+}
+
+function setF(f) { filter = f; rFilters(); rTable(); }
+function addApp() { alert("Tell your Claude agent: \"add [program] to my applications\""); }
+function esc(s) { return s ? s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") : ""; }
+
+loadData();
+</script>
+</body>
+</html>
